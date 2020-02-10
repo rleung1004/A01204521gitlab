@@ -1,0 +1,27 @@
+.flex {
+    display: block;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .container {
+    height: 90vh;
+  }
+
+  li:hover {
+    cursor: pointer;
+  }
+
+  table, tr, td, th {
+    border: 1px solid black;
+  }
+
+  table {
+    width :100%;
+  }
+
+  tr, th {
+    column-span: 50%;
+  }
+
+  
