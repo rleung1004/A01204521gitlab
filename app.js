@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
         
     }
   }
-
+  // function that checks if object exists in historyData
   function checkHistory(movie) {
       for (let i = 0; i < historyData.length; i++) {
           if (historyData[i].name === movie) {
