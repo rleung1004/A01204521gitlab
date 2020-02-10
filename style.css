@@ -22,6 +22,7 @@
 
   tr, th {
     column-span: 50%;
+    padding: 1px;
   }
 
   

@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
   function createTable() {
       let historyCard = document.createElement("table");
       historyCard.className = ("historyCard");
-      let tableHeader = document.createElement("th");
+      let tableHeader = document.createElement("tr");
       let tableCell1 = document.createElement("td");
       let tableCell2 = document.createElement("td");
       let headerText1 = document.createTextNode("Movie Name");
