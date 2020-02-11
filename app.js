@@ -1,5 +1,18 @@
-// instantiate an object that will contain history data (movieName : timesWatched)
-let historyData = [];
+// Add DOM selectors to target input and UL movie list
+
+
+
+// database to hold onto movie history (in-memory database)
+const historyData = {
+
+};
+
+if (localStorage.getItem("historyData")) {
+  historyData = JSON.parse(localStorage.getItem("historyData"));
+  updateMovieHistory();
+} 
+
+
 document.addEventListener('DOMContentLoaded', function(event) {
   //function to check if value is empty
   function isEmpty(val) {
@@ -11,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
   }
 
   //add movie to list on pressing enter key
-  let input = document.getElementById("addMovie");
+   let input = document.getElementById("addMovie");
   input.addEventListener("keyup", function(e) {
     if (e.keyCode === 13) {
       e.preventDefault();
@@ -21,71 +34,60 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
   //function to add movie into list
   function addMovie(movie) {
-    if (!checkHistory(movie)) {
+
+    let keyFound = keyExists(movie, historyData);
+
+    if (!keyFound) {
         let node = document.createElement("li");
         let textNode = document.createTextNode(movie);
         node.appendChild(textNode);
         document.querySelector(".list-group").appendChild(node);
-        node.classList.add("movie-item", "flex");
-        // add into historyData
-        let movieObject = {name : movie, timesWatched: 1};
-        historyData.push(movieObject);
-        // add table row
-        let tableRow = document.createElement("tr");
-        let movieName = document.createElement("td");
-        let watched = document.createElement("td");
-        watched.id = movie;
-        let numberOne = document.createTextNode("1");
-        let movieText = document.createTextNode(movie);
-        movieName.appendChild(movieText);
-        watched.appendChild(numberOne);
-        tableRow.appendChild(movieName);
-        tableRow.appendChild(watched);
-        document.querySelector(".historyCard").appendChild(tableRow);
-        console.log(movie);
-        
     } 
-    else {
-        for (let i = 0; i < historyData.length; i++) {
-            if (historyData[i].name === movie) {
-                historyData[i].timesWatched++;
-                let updatedValue = historyData[i].timesWatched.toString();
-                document.getElementById(movie).innerHTML = updatedValue;
-            }
-        }
-        
+    
+    // insert movie into object
+
+    if (keyFound) {
+      historyData[keyFound] = historyData[keyFound] + 1 || 1;
+      localStorage.setItem("historyData", JSON.stringify(historyData));
+    } else {
+      historyData[movie] = historyData[movie] + 1 || 1;
+      localStorage.setItem("historyData", JSON.stringify(historyData));
     }
+
+    updateMovieHistory();
   }
+
   // function that checks if object exists in historyData
-  function checkHistory(movie) {
-      for (let i = 0; i < historyData.length; i++) {
-          if (historyData[i].name === movie) {
-              return true;
-          }
-          else {
-              return false;
-          }
+  function keyExists(value, obj) {
+      // Get all the keys from the database object
+      let keyList = Object.keys(obj);
+      for (let i = 0; i < keyList.length; i++) {
+        if (value.toLowerCase() === keyList[i].toLowerCase()) {
+          return keyList[i];
+        }
       }
-  }
-  // create a table
-  function createTable() {
-      let historyCard = document.createElement("table");
-      historyCard.className = ("historyCard");
-      let tableHeader = document.createElement("tr");
-      let tableCell1 = document.createElement("td");
-      let tableCell2 = document.createElement("td");
-      let headerText1 = document.createTextNode("Movie Name");
-      let headerText2 = document.createTextNode("Times Watched");
-      tableCell1.appendChild(headerText1);
-      tableCell2.appendChild(headerText2);
-      tableHeader.appendChild(tableCell1);
-      tableHeader.appendChild(tableCell2);
-      historyCard.appendChild(tableHeader);
-      document.getElementById("movieHistoryCard").appendChild(historyCard);
+      return false;
   }
 
-  createTable();
-
+  // render the table with the LATEST value of the object being
+  function updateMovieHistory() {
+    let myTable = `
+    <h5 class="card-title"Movie History</h5>
+    <table id="movieHistoryTable">
+      <tr>
+        <th>Title</th>
+        <th>Watched</th>
+      </tr>
+      ${
+        Object.keys(historyData).map(function (key) {
+          return `<tr><td>${key}</td><td>${historyData[key]}</td></tr>`
+        }).join("")
+      }
+    </table>
+    `;
+    document.querySelector("#movieHistoryCard").innerHTML = myTable;
+  }
+ 
   //"add movie" button functionality
   document.querySelector(".btn-primary").onclick = function(e) {
     e.preventDefault();
